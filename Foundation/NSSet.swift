@@ -147,6 +147,7 @@ public class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
     }
     
     public func encodeWithCoder(aCoder: NSCoder) {
+        // The encoding of a NSSet is identical to the encoding of an NSArray of its contents
         self.allObjects._nsObject.encodeWithCoder(aCoder)
     }
     

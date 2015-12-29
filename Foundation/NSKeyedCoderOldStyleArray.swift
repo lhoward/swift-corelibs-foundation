@@ -14,17 +14,17 @@ internal final class _NSKeyedCoderOldStyleArray : NSObject, NSCoding {
     private var _addr : UnsafeMutablePointer<UInt8> = nil // free if decoding
     private var _count : Int
     private var _size : Int
-    private var _type : NSObjCType
+    private var _type : _NSSimpleObjCType
     private var _decoded : Bool = false
     
-    static func sizeForObjCType(type: NSObjCType) -> Int? {
+    static func sizeForObjCType(type: _NSSimpleObjCType) -> Int? {
         var size : Int = 0
         var align : Int = 0
         
         return _NSGetSizeAndAlignment(type, &size, &align) ? size : nil
     }
 
-    init?(objCType type: NSObjCType, count: Int, at addr: UnsafePointer<Void>) {
+    init?(objCType type: _NSSimpleObjCType, count: Int, at addr: UnsafePointer<Void>) {
         self._addr = UnsafeMutablePointer<UInt8>(addr)
         self._count = count
         
@@ -47,7 +47,7 @@ internal final class _NSKeyedCoderOldStyleArray : NSObject, NSCoding {
     init?(coder aDecoder: NSCoder) {
         assert(aDecoder.allowsKeyedCoding)
         
-        guard let type = NSObjCType(UInt8(aDecoder.decodeIntegerForKey("NS.type"))) else {
+        guard let type = _NSSimpleObjCType(UInt8(aDecoder.decodeIntegerForKey("NS.type"))) else {
             return nil
         }
         
@@ -88,7 +88,7 @@ internal final class _NSKeyedCoderOldStyleArray : NSObject, NSCoding {
         }
     }
     
-    func fillObjCType(type: NSObjCType, count: Int, at addr: UnsafeMutablePointer<Void>) {
+    func fillObjCType(type: _NSSimpleObjCType, count: Int, at addr: UnsafeMutablePointer<Void>) {
         if type == self._type && count <= self._count {
             UnsafeMutablePointer<UInt8>(addr).moveInitializeFrom(self._addr, count: count * self._size)
         }

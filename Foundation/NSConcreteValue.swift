@@ -36,7 +36,7 @@ final internal class NSConcreteValue : NSObject, NSCopying, NSSecureCoding, NSCo
         var count : Int = 0
         let extraBytes : Int = spec.length + 1 // extra bytes after TypeInfoHeader
         
-        var type = NSObjCType(spec)
+        var type = _NSSimpleObjCType(spec)
         guard type != nil else {
             print("NSConcreteValue.createTypeInfoNonSpecial: unsupported type encoding spec '\(spec)'")
             return nil

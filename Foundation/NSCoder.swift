@@ -288,7 +288,9 @@ public class NSCoder : NSObject {
     
     public func failWithError(error: NSError) {
         if let debugDescription = error.userInfo["NSDebugDescription"] {
-            fatalError("*** NSKeyedUnarchiver.init: \(debugDescription)")
+            NSLog("*** NSKeyedUnarchiver.init: \(debugDescription)")
+        } else {
+            NSLog("*** NSKeyedUnarchiver.init: decoding error")
         }
     }
     

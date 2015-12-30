@@ -2,7 +2,7 @@
 
 There is a preliminary implementation of NSKeyedArchiver and NSKeyedUnarchiver which should be compatible with the OS X version.
 
-* The implementation of NSStringFromClass() and NSClassFromString() currently uses private Swift API and does not support encoding classes that are not exported (i.e. cannot be looked up with dlsym()
+* The implementation of NSStringFromClass() and NSClassFromString() currently uses private Swift API and does not support encoding classes that are not exported (i.e. cannot be looked up with dlsym() not generic classes
 
 * NSKeyedUnarchiver reads the entire plist into memory before constructing the object graph, it should construct it incrementally as does Foundation on OS X
 
@@ -13,6 +13,8 @@ There is a preliminary implementation of NSKeyedArchiver and NSKeyedUnarchiver w
 * The signature of the decoding APIs that take a class whitelist has changed from NSSet to [AnyClass] as AnyClass does not support Hashable
 
 * classForKeyed[Un]Archiver has moved into NSObject so it can be overridden, move this back into an extension eventually
+
+* Linux support is presently blocked on [SR-412]
 
 # Classes
 

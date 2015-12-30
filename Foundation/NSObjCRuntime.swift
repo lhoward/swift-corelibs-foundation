@@ -268,7 +268,7 @@ public func NSStringFromClass(aClass: AnyClass) -> String {
     } else if let mangledName = _CFCopyNominalTypeNameForClass(unsafeBitCast(aClass, CFTypeRef.self)) {
         return "_Tt" + String(mangledName)
     } else {
-        fatalError("NSStringFromClass could not determine class name")
+        fatalError("NSStringFromClass could not determine name for \(aClass)")
     }
 }
 

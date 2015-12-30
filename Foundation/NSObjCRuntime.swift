@@ -274,12 +274,13 @@ public func NSStringFromClass(aClass: AnyClass) -> String {
 
 #if os(OSX) || os(iOS)
     private let RTLD_DEFAULT = UnsafeMutablePointer<Void>(bitPattern: -2)
-    typealias TypeMetadataAccessor = @convention(c) () -> AnyClass?
 #elseif os(Linux)
     // XXX @convention(c) crashes swiftc
-    typealias TypeMetadataAccessor = () -> AnyClass?
     private let RTLD_DEFAULT = UnsafeMutablePointer<Void>(bitPattern: 0)
 #endif
+
+// [SR-412] needs compiler fix on Linux
+typealias TypeMetadataAccessor = @convention(c) () -> AnyClass?
 
 /**
     Calls a metadata accessor given a metadata accessor symbol name.

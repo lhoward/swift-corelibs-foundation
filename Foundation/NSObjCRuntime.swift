@@ -268,7 +268,7 @@ public func NSStringFromClass(aClass: AnyClass) -> String {
     } else if let mangledName = _CFCopyNominalTypeNameForClass(unsafeBitCast(aClass, CFTypeRef.self)) {
         return "_Tt" + String(mangledName)
     } else {
-        fatalError("NSStringFromClass could not determine name for \(aClass)")
+        fatalError("NSStringFromClass could not determine name for class '\(aClass)'")
     }
 }
 
@@ -341,7 +341,7 @@ public func NSClassFromString(aClassName: String) -> AnyClass? {
     }
     
     if !mangledName.hasPrefix("_Tt") {
-        fatalError("NSClassFromString() invalid mangled name \(mangledName)")
+        fatalError("NSClassFromString() invalid mangled name '\(mangledName)'")
     }
 
     let accessorName = "_TMa" + mangledName.bridge().substringFromIndex(3)

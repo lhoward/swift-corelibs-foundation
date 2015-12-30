@@ -315,6 +315,7 @@ swift_sources = CompileSwiftSources([
 	'Foundation/NSScanner.swift',
 	'Foundation/NSSet.swift',
 	'Foundation/NSSortDescriptor.swift',
+	'Foundation/NSSpecialValue.swift',
 	'Foundation/NSStream.swift',
 	'Foundation/NSString.swift',
 	'Foundation/NSSwiftRuntime.swift',
@@ -355,6 +356,16 @@ foundation_tests_resources = CopyResources('TestFoundation', [
     'TestFoundation/Resources/NSURLTestData.plist',
     'TestFoundation/Resources/Test.plist',
     'TestFoundation/Resources/NSStringTestData.txt',
+    'TestFoundation/Resources/NSKeyedUnarchiver-ArrayTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-ComplexTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-ConcreteValueTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-EdgeInsetsTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-NotificationTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-RangeTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-RectTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-URLTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-UUIDTest.plist',
+    'TestFoundation/Resources/NSKeyedUnarchiver-OrderedSetTest.plist',
 ])
 
 # TODO: Probably this should be another 'product', but for now it's simply a phase

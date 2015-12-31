@@ -249,103 +249,41 @@ private let _SwiftFoundationModuleName = "Foundation"
 #endif
 
 /**
-    Returns the class name for a class, applying the following rules:
- 
-    - SwiftFoundation classes are returned with flat, unnamespaced, demangled names
-    - Swift classes directly under a package (i.e. one-level) are returned as a demangled name
-    - Everything else is returned as the full mangled type name
+    Returns the class name for a class. For compatibility with Foundation on Darwin,
+    Foundation classes are returned as unqualified names.
+
+    This is temporarily an internal function until _typeByName() works for all classes.
  */
 internal func NSStringFromClass(aClass: AnyClass) -> String {
-    let demangledName = _typeName(aClass).bridge()
-    let components = demangledName.componentsSeparatedByString(".")
+    let aClassName = _typeName(aClass).bridge()
+    let components = aClassName.componentsSeparatedByString(".")
     
     if components.count == 2 {
         if components[0] == _SwiftFoundationModuleName {
             return components[1]
         } else {
-            return String(demangledName)
+            return String(aClassName)
         }
-/*
-    } else if let mangledName = _CFCopyNominalTypeNameForClass(unsafeBitCast(aClass, CFTypeRef.self)) {
-        return "_Tt" + String(mangledName)
- */
     } else {
         fatalError("NSStringFromClass could not determine name for class '\(aClass)'")
     }
 }
 
-#if os(OSX) || os(iOS)
-    private let RTLD_DEFAULT = UnsafeMutablePointer<Void>(bitPattern: -2)
-#elseif os(Linux)
-    private let RTLD_DEFAULT = UnsafeMutablePointer<Void>(bitPattern: 0)
-#endif
-
-// [SR-412] needs compiler fix on Linux
-typealias TypeMetadataAccessor = @convention(c) () -> AnyClass?
-
 /**
-    Calls a metadata accessor given a metadata accessor symbol name.
- */
-private func typeMetadataFromAccessorName(mangledName : String) -> AnyClass? {
-    let symbol = dlsym(RTLD_DEFAULT, mangledName)
-    
-    if symbol != nil {
-        let accessor = unsafeBitCast(symbol, TypeMetadataAccessor.self)
-        return accessor()
-    } else {
-        return nil
-    }
-}
+    Returns the class metadata given a string. For compatibility with Foundation on Darwin,
+    unqualified names are looked up in the Foundation module. Owing to a present limitation
+    of the Swift runtime, only classes conforming to a known protocol can be looked up.
 
-/**
-    Returns mangled metadata accessor symbol name for a namespaced
-    Swift class.
- */
-private func mangledTypeNameNameForClass(components : [String]) -> String {
-    var mangledName = "_TtC"
-    
-    for component in components {
-        mangledName += "\(component.length)" + component
-    }
-    
-    return mangledName
-}
-
-private func mangledTypeNameNameForClass(className : String) -> String {
-    let components = className.bridge().componentsSeparatedByString(".")
-    
-    return mangledTypeNameNameForClass(components)
-}
-
-/**
-    Returns the class metadata given a string, applying the following rules:
- 
-    - Mangled type names are looked up directly
-    - Unmangled namespaced names are mangled then looked up
-    - Unmangled unnamespaced names are mangled into SwiftFoundation classes before lookup
-
-    [SR-381] is tracking an official API for this
+    This is temporarily an internal function until _typeByName() works for all classes.
  */
 internal func NSClassFromString(aClassName: String) -> AnyClass? {
-    var mangledName : String
-    
-    if aClassName.hasPrefix("_Tt") {
-        mangledName = aClassName
+    var aClass : Any.Type? = nil
+
+    if aClassName.characters.indexOf(".") == nil {
+        aClass = _typeByName(_SwiftFoundationModuleName + "." + aClassName)
     } else {
-        let components = aClassName.bridge().componentsSeparatedByString(".")
-        
-        if components.count > 1 {
-            mangledName = mangledTypeNameNameForClass(aClassName)
-        } else {
-            mangledName = mangledTypeNameNameForClass([_SwiftFoundationModuleName] + components)
-        }
-    }
-    
-    if !mangledName.hasPrefix("_Tt") {
-        fatalError("NSClassFromString() invalid mangled name '\(mangledName)'")
+        aClass = _typeByName(aClassName)
     }
 
-    let accessorName = "_TMa" + mangledName.bridge().substringFromIndex(3)
-
-    return typeMetadataFromAccessorName(accessorName)
+    return aClass as? AnyClass
 }

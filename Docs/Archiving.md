@@ -2,7 +2,9 @@
 
 There is a preliminary implementation of NSKeyedArchiver and NSKeyedUnarchiver which should be compatible with the OS X version.
 
-* The implementation of NSStringFromClass() and NSClassFromString() currently uses private Swift API and does not support encoding classes that are not exported (i.e. cannot be looked up with dlsym() not generic classes
+* The implementation of NSClassFromString() will only work with classes that explicitly conform to protocols. As such, subclasses such as NSMutableArary and NSMutableDictionary cannot be decoded
+
+* Archives with nested classes are presently incompatible with Darwin Foundation as there is no support for mangled class names.
 
 * NSKeyedUnarchiver reads the entire plist into memory before constructing the object graph, it should construct it incrementally as does Foundation on OS X
 
@@ -14,7 +16,7 @@ There is a preliminary implementation of NSKeyedArchiver and NSKeyedUnarchiver w
 
 * classForKeyed[Un]Archiver has moved into NSObject so it can be overridden, move this back into an extension eventually
 
-* Linux support is presently blocked on [SR-412]
+* Linux support is presently blocked on [SR-381]
 
 # Classes
 

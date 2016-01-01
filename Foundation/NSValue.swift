@@ -9,7 +9,7 @@
 
 public class NSValue : NSObject, NSCopying, NSSecureCoding, NSCoding {
 
-    private static var SideTable = [ObjectIdentifier : NSConcreteValue]()
+    private static var SideTable = [ObjectIdentifier : NSValue]()
     private static var SideTableLock = NSLock()
 
     internal override init() {
@@ -20,7 +20,7 @@ public class NSValue : NSObject, NSCopying, NSSecureCoding, NSCoding {
     // because we cannot support the class cluster pattern owing to a lack of
     // factory initialization methods, we maintain a sidetable mapping instances
     // of NSValue to NSConcreteValue
-    private var _concreteValue: NSConcreteValue {
+    internal var _concreteValue: NSValue {
         get {
             return NSValue.SideTableLock.synchronized {
                 return NSValue.SideTable[ObjectIdentifier(self)]!
@@ -95,7 +95,7 @@ public class NSValue : NSObject, NSCopying, NSSecureCoding, NSCoding {
     public convenience required init(bytes value: UnsafePointer<Void>, objCType type: UnsafePointer<Int8>) {
         if self.dynamicType == NSValue.self {
             self.init()
-            self._concreteValue = NSConcreteValue(bytes: value, objCType: type)
+            self._concreteValue = NSConcreteValue(bytes: unsafeBitCast(value, UnsafePointer<UInt8>.self), objCType: type)
         } else {
             NSRequiresConcreteImplementation()
         }
@@ -104,16 +104,26 @@ public class NSValue : NSObject, NSCopying, NSSecureCoding, NSCoding {
     public convenience required init?(coder aDecoder: NSCoder) {
         if self.dynamicType == NSValue.self {
             self.init()
-            if let concreteValue = NSConcreteValue(coder: aDecoder) {
-                self._concreteValue = concreteValue
+            
+            var concreteValue : NSValue? = nil
+            
+            if aDecoder.containsValueForKey("NS.special") {
+                // It's unfortunate that we can't specialise types at runtime
+                concreteValue = NSSpecialValue(coder: aDecoder)
             } else {
+                concreteValue = NSConcreteValue(coder: aDecoder)
+            }
+            
+            guard concreteValue != nil else {
                 return nil
             }
+            
+            self._concreteValue = concreteValue!
         } else {
             NSRequiresConcreteImplementation()
         }
     }
-    
+        
     public func encodeWithCoder(aCoder: NSCoder) {
         if self.dynamicType == NSValue.self {
             _concreteValue.encodeWithCoder(aCoder)
@@ -122,7 +132,7 @@ public class NSValue : NSObject, NSCopying, NSSecureCoding, NSCoding {
         }
     }
     
-    public static func supportsSecureCoding() -> Bool {
+    public class func supportsSecureCoding() -> Bool {
         return true
     }
     

@@ -205,7 +205,7 @@ public class NSCharacterSet : NSObject, NSCopying, NSMutableCopying, NSCoding {
     }
 }
 
-public class NSMutableCharacterSet : NSCharacterSet {
+public class NSMutableCharacterSet : NSCharacterSet, __NSDummyProtocol {
 
     public convenience required init(coder aDecoder: NSCoder) {
         NSUnimplemented()

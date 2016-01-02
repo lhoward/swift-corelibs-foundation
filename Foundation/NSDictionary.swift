@@ -532,7 +532,7 @@ extension Dictionary : _NSBridgable, _CFBridgable {
     internal var _cfObject: CFDictionaryRef { return _nsObject._cfObject }
 }
 
-public class NSMutableDictionary : NSDictionary {
+public class NSMutableDictionary : NSDictionary, __NSDummyProtocol {
     
     public func removeObjectForKey(aKey: AnyObject) {
         if self.dynamicType === NSDictionary.self || self.dynamicType === NSMutableDictionary.self {

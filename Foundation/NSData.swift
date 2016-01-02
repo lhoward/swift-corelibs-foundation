@@ -538,7 +538,7 @@ extension NSMutableData {
     internal var _cfMutableObject: CFMutableDataRef { return unsafeBitCast(self, CFMutableDataRef.self) }
 }
 
-public class NSMutableData : NSData {
+public class NSMutableData : NSData, __NSDummyProtocol {
 
     public required convenience init() {
         self.init(bytes: nil, length: 0)

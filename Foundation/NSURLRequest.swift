@@ -314,7 +314,7 @@ public class NSURLRequest : NSObject, NSSecureCoding, NSCopying, NSMutableCopyin
     example.
     </ul>
 */
-public class NSMutableURLRequest : NSURLRequest {
+public class NSMutableURLRequest : NSURLRequest, __NSDummyProtocol {
     
     private var _HTTPMethod: String? = "GET"
     

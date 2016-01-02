@@ -475,7 +475,7 @@ extension NSIndexSet : SequenceType {
 
 }
 
-public class NSMutableIndexSet : NSIndexSet {
+public class NSMutableIndexSet : NSIndexSet, __NSDummyProtocol {
     
     public func addIndexes(indexSet: NSIndexSet) {
         indexSet.enumerateRangesUsingBlock { range, _ in

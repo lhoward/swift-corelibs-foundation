@@ -1307,7 +1307,7 @@ extension NSString {
 
 extension NSString : StringLiteralConvertible { }
 
-public class NSMutableString : NSString {
+public class NSMutableString : NSString, __NSDummyProtocol {
     public func replaceCharactersInRange(range: NSRange, withString aString: String) {
         if self.dynamicType === NSString.self || self.dynamicType === NSMutableString.self {
             // this is incorrectly calculated for grapheme clusters that have a size greater than a single unichar

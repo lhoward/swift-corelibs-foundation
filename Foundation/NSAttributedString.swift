@@ -67,7 +67,7 @@ public struct NSAttributedStringEnumerationOptions : OptionSetType {
 
 
 
-public class NSMutableAttributedString : NSAttributedString {
+public class NSMutableAttributedString : NSAttributedString, __NSDummyProtocol {
     
     public func replaceCharactersInRange(range: NSRange, withString str: String) { NSUnimplemented() }
     public func setAttributes(attrs: [String : AnyObject]?, range: NSRange) { NSUnimplemented() }

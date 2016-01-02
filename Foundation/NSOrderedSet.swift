@@ -240,7 +240,7 @@ extension NSOrderedSet {
 
 /****************       Mutable Ordered Set     ****************/
 
-public class NSMutableOrderedSet : NSOrderedSet {
+public class NSMutableOrderedSet : NSOrderedSet, __NSDummyProtocol {
     
     public func insertObject(object: AnyObject, atIndex idx: Int) {
         guard idx < count && idx >= 0 else {

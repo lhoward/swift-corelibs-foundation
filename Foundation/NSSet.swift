@@ -320,7 +320,7 @@ extension NSSet : SequenceType {
     }
 }
 
-public class NSMutableSet : NSSet {
+public class NSMutableSet : NSSet, __NSDummyProtocol {
     
     public func addObject(object: AnyObject) {
         if self.dynamicType === NSMutableSet.self {

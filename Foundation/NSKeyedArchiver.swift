@@ -34,7 +34,7 @@ internal func escapeArchiverKey(key: String) -> String {
     }
 }
 
-internal var NSPropertyListClasses : [AnyClass] = [
+internal let NSPropertyListClasses : [AnyClass] = [
     NSArray.self,
     NSDictionary.self,
     NSString.self,

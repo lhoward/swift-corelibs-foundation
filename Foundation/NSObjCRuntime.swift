@@ -242,6 +242,61 @@ internal protocol _NSBridgable {
     var _nsObject: NSType { get }
 }
 
+private let NSClassNameMap : Dictionary<String, AnyClass> = [
+    "_NSKeyedCoderOldStyleArray" : _NSKeyedCoderOldStyleArray.self,
+    "NSAffineTransform" : NSAffineTransform.self,
+    "NSArray" : NSArray.self,
+    "NSAttributedString" : NSAttributedString.self,
+    "NSCalendar" : NSCalendar.self,
+    "NSCharacterSet" : NSCharacterSet.self,
+    "NSData" : NSData.self,
+    "NSDate" : NSDate.self,
+    "NSDateComponents" : NSDateComponents.self,
+    "NSDecimalNumberHandler" : NSDecimalNumberHandler.self,
+    "NSDictionary" : NSDictionary.self,
+    "NSError" : NSError.self,
+    "NSExpression" : NSExpression.self,
+    "NSFileHandle" : NSFileHandle.self,
+    "NSFormatter" : NSFormatter.self,
+    "NSIndexPath" : NSIndexPath.self,
+    "NSIndexSet" : NSIndexSet.self,
+    "NSKeyedArchiver" : NSKeyedArchiver.self,
+    "NSLocale" : NSLocale.self,
+    "NSMutableArray" : NSMutableArray.self,
+    "NSMutableAttributedString" : NSMutableAttributedString.self,
+    "NSMutableCharacterSet" : NSMutableCharacterSet.self,
+    "NSMutableData" : NSMutableData.self,
+    "NSMutableDictionary" : NSMutableDictionary.self,
+    "NSMutableIndexSet" : NSMutableIndexSet.self,
+    "NSMutableOrderedSet" : NSMutableOrderedSet.self,
+    "NSMutableSet" : NSMutableSet.self,
+    "NSMutableString" : NSMutableString.self,
+    "NSMutableURLRequest" : NSMutableURLRequest.self,
+    "NSNotification" : NSNotification.self,
+    "NSNull" : NSNull.self,
+    "NSObject" : NSObject.self,
+    "NSOrderedSet" : NSOrderedSet.self,
+    "NSPersonNameComponents" : NSPersonNameComponents.self,
+    "NSPort" : NSPort.self,
+    "NSPredicate" : NSPredicate.self,
+    "NSRegularExpression" : NSRegularExpression.self,
+    "NSSet" : NSSet.self,
+    "NSSortDescriptor" : NSSortDescriptor.self,
+    "NSString" : NSString.self,
+    "NSTextCheckingResult" : NSTextCheckingResult.self,
+    "NSTimeZone" : NSTimeZone.self,
+    "NSURL" : NSURL.self,
+    "NSURLQueryItem" : NSURLQueryItem.self,
+    "NSURLAuthenticationChallenge" : NSURLAuthenticationChallenge.self,
+    "NSCachedURLResponse" : NSCachedURLResponse.self,
+    "NSURLCredential" : NSURLCredential.self,
+    "NSURLProtectionSpace" : NSURLProtectionSpace.self,
+    "NSURLRequest" : NSURLRequest.self,
+    "NSURLResponse" : NSURLResponse.self,
+    "NSUUID" : NSUUID.self,
+    "NSValue" : NSValue.self,
+]
+
 #if os(OSX) || os(iOS)
 private let _SwiftFoundationModuleName = "SwiftFoundation"
 #else
@@ -255,18 +310,13 @@ private let _SwiftFoundationModuleName = "Foundation"
     This is temporarily an internal function until _typeByName() works for all classes.
  */
 internal func NSStringFromClass(aClass: AnyClass) -> String {
-    let aClassName = _typeName(aClass).bridge()
-    let components = aClassName.componentsSeparatedByString(".")
-    
-    if components.count == 2 {
-        if components[0] == _SwiftFoundationModuleName {
-            return components[1]
-        } else {
-            return String(aClassName)
+    for (className, classType) in NSClassNameMap {
+        if classType == aClass {
+            return className
         }
-    } else {
-        fatalError("NSStringFromClass could not determine name for class '\(aClass)'")
     }
+    
+    return String(reflecting: aClass)
 }
 
 /**
@@ -277,15 +327,7 @@ internal func NSStringFromClass(aClass: AnyClass) -> String {
     This is temporarily an internal function until _typeByName() works for all classes.
  */
 internal func NSClassFromString(aClassName: String) -> AnyClass? {
-    var aClass : Any.Type? = nil
-
-    if aClassName.characters.indexOf(".") == nil {
-        aClass = _typeByName(_SwiftFoundationModuleName + "." + aClassName)
-    } else {
-        aClass = _typeByName(aClassName)
-    }
-
-    return aClass as? AnyClass
+    return NSClassNameMap[aClassName]
 }
 
 // _typeByName() only works for classes with explicit protocol conformances, so subclasses

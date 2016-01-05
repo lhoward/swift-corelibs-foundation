@@ -78,10 +78,14 @@ class TestNSKeyedArchiver : XCTestCase {
         let data = NSMutableData()
         let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
         
+        archiver.setClassName("TestFoundation.UserClass", forClass: UserClass.self)
+        
         XCTAssertTrue(encode(archiver))
         archiver.finishEncoding()
         
         let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
+        
+        unarchiver.setClass(UserClass.self, forClassName: "TestFoundation.UserClass")
         XCTAssertTrue(decode(unarchiver))
     }
     
